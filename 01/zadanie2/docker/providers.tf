@@ -19,7 +19,7 @@ variable "yandex_cloud_token" {
 
 variable "docker_remote_host" {
   type        = string
-  description = "yandex_cloud_token"
+  description = "docker_remote_host"
 }
 
 
