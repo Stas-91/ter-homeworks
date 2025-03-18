@@ -1,0 +1,7 @@
+%{~ for group_name, servers in groups ~}
+[${group_name}]${"\n"}
+%{~ for server in servers ~}
+${server["name"]}   ansible_host=${server["network_interface"][0]["nat_ip_address"] != "" ? server["network_interface"][0]["nat_ip_address"] : server["network_interface"][0]["ip_address"]} fqdn=${server["fqdn"]}${"\n"}
+%{~ endfor ~}
+${"\n"}
+%{~ endfor ~}

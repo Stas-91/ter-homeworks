@@ -1,0 +1,33 @@
+- name: Test
+  gather_facts: false
+  hosts: webservers
+  vars:
+    ansible_ssh_user: ubuntu
+  become: true
+
+  pre_tasks:
+    - name: Validating the ssh port is open
+      ansible.builtin.wait_for:
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+        port: 22
+        delay: 5
+        timeout: 300
+        state: started
+        search_regex: OpenSSH
+
+  tasks:
+    - name: Save own secret
+      ansible.builtin.copy:
+        dest: /tmp/own.pass
+        content: "{{ secrets[inventory_hostname] }}"
+      when: secrets[inventory_hostname] is defined
+
+    - name: Save all secrets
+      ansible.builtin.copy:
+        dest: /tmp/all.pass
+        content: "{{ secrets }}"
+      when: secrets is defined
+
+    - name: Debug secrets (optional)
+      ansible.builtin.debug:
+        var: secrets
