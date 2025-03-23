@@ -25,33 +25,110 @@ variable "default_cidr" {
   description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
 }
 
-variable "vpc_name" {
-  type        = string
-  default     = "develop"
-  description = "VPC network&subnet name"
+# VPC Configurations
+variable "vpc_configs" {
+  default = {
+    dev = {
+      network_name = "develop"
+      subnets = [
+        { zone = "ru-central1-a", cidr = "10.0.1.0/24" }
+      ]
+    }
+    prod = {
+      network_name = "production"
+      subnets = [
+        { zone = "ru-central1-a", cidr = "10.1.1.0/24" },
+        { zone = "ru-central1-b", cidr = "10.1.2.0/24" },
+        { zone = "ru-central1-d", cidr = "10.1.3.0/24" }
+      ]
+    }
+  }
 }
 
-###common vars
+# VM Common Configurations
+variable "vm_common" {
+  default = {
+    username      = "ubuntu"
+    packages      = ["vim", "nginx"]
+    runcmd        = "runcmd:\n  - [ systemctl, enable, nginx ]\n  - [ systemctl, start, nginx ]"
+    image_family  = "ubuntu-2004-lts"
+    serial_port_enable = 1
+  }
+}
 
 variable "vms_ssh_root_key" {
-  type        = string
-  default     = "your_ssh_ed25519_key"
-  description = "ssh-keygen -t ed25519"
+  type = string
 }
 
-###example vm_web var
-variable "vm_web_name" {
-  type        = string
-  default     = "netology-develop-platform-web"
-  description = "example vm_web_ prefix"
+# VM Specific Configurations
+variable "vm_instances" {
+  default = {
+    marketing = {
+      env_name       = "develop"
+      instance_name  = "webs"
+      instance_count = 1
+      public_ip      = true
+      subnet_zones   = ["ru-central1-a"]
+      labels = {
+        owner   = "s.pomelnikov"
+        project = "marketing"
+      }
+    }
+    analytics = {
+      env_name       = "stage"
+      instance_name  = "web-stage"
+      instance_count = 1
+      public_ip      = true
+      subnet_zones   = ["ru-central1-a"]
+      labels = {
+        owner   = "s.pomelnikov"
+        project = "analytics"
+      }
+    }
+  }
 }
 
-###example vm_db var
-variable "vm_db_name" {
-  type        = string
-  default     = "netology-develop-platform-db"
-  description = "example vm_db_ prefix"
+# MySQL Configuration
+variable "mysql_config" {
+  default = {
+    cluster_name   = "example"
+    ha             = true
+    database_name  = "test"
+    username       = "app"
+    password       = "Qwerty123"
+    user_roles     = ["ALL"]
+  }
 }
 
+# S3 Configuration
+variable "s3_config" {
+  default = {
+    bucket_prefix = "simple-bucket"
+    max_size      = 1073741824
+    versioning    = {
+      enabled = true
+    }
+  }
+}
 
+# Random String Configuration
+variable "random_string_config" {
+  default = {
+    length  = 8
+    upper   = false
+    lower   = true
+    numeric = true
+    special = false
+  }
+}
 
+# Vault Configuration
+variable "vault_config" {
+  default = {
+    mount = "secret"
+    name  = "example"
+    data  = {
+      test = "congrats!"
+    }
+  }
+}
