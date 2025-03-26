@@ -1,32 +1,40 @@
 ###cloud vars
-variable "token" {
-  type        = string
-  description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
-}
+# variable "token" {
+#   type        = string
+#   description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
+# }
 
-variable "cloud_id" {
-  type        = string
-  description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
-}
+# variable "cloud_id" {
+#   type        = string
+#   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
+# }
 
-variable "folder_id" {
-  type        = string
-  description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
-}
+# variable "folder_id" {
+#   type        = string
+#   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
+# }
 
-variable "default_zone" {
-  type        = string
-  default     = "ru-central1-a"
-  description = "https://cloud.yandex.ru/docs/overview/concepts/geo-scope"
-}
-variable "default_cidr" {
-  type        = list(string)
-  default     = ["10.0.1.0/24"]
-  description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
-}
+# variable "default_zone" {
+#   type        = string
+#   default     = "ru-central1-a"
+#   description = "https://cloud.yandex.ru/docs/overview/concepts/geo-scope"
+# }
+
+# variable "default_cidr" {
+#   type        = list(string)
+#   default     = ["10.0.1.0/24"]
+#   description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
+# }
 
 # VPC Configurations
 variable "vpc_configs" {
+  type = map(object({
+    network_name = string
+    subnets      = list(object({
+      zone = string
+      cidr = string
+    }))
+  }))
   default = {
     dev = {
       network_name = "develop"
@@ -47,6 +55,13 @@ variable "vpc_configs" {
 
 # VM Common Configurations
 variable "vm_common" {
+  type = object({
+    username           = string
+    packages           = list(string)
+    runcmd             = string
+    image_family       = string
+    serial_port_enable = number
+  })
   default = {
     username      = "ubuntu"
     packages      = ["vim", "nginx"]
@@ -62,6 +77,14 @@ variable "vms_ssh_root_key" {
 
 # VM Specific Configurations
 variable "vm_instances" {
+  type = map(object({
+    env_name       = string
+    instance_name  = string
+    instance_count = number
+    public_ip      = bool
+    subnet_zones   = list(string)
+    labels         = map(string)
+  }))
   default = {
     marketing = {
       env_name       = "develop"
@@ -90,18 +113,35 @@ variable "vm_instances" {
 
 # MySQL Configuration
 variable "mysql_config" {
+  type = object({
+    cluster_name  = string
+    ha            = bool
+    database_name = string
+    username      = string
+    password      = string
+    user_roles    = list(string)
+    security_group_ids = list(string)
+  })
   default = {
     cluster_name   = "example"
     ha             = true
     database_name  = "test"
     username       = "app"
-    password       = "Qwerty123"
+    password       = null
     user_roles     = ["ALL"]
+    security_group_ids = []
   }
 }
 
 # S3 Configuration
 variable "s3_config" {
+  type = object({
+    bucket_prefix = string
+    max_size      = number
+    versioning    = object({
+      enabled = bool
+    })
+  })
   default = {
     bucket_prefix = "simple-bucket"
     max_size      = 1073741824
@@ -113,6 +153,13 @@ variable "s3_config" {
 
 # Random String Configuration
 variable "random_string_config" {
+  type = object({
+    length  = number
+    upper   = bool
+    lower   = bool
+    numeric = bool
+    special = bool
+  })
   default = {
     length  = 8
     upper   = false
@@ -122,22 +169,18 @@ variable "random_string_config" {
   }
 }
 
-# # Vault Configuration
-# variable "vault_config" {
-#   default = {
-#     mount = "secret"
-#     name  = "example"
-#     data  = {
-#       test = "congrats!"
-#     }
-#   }
-# }
-
-# variable "yc_s3_credentials" {
-#   description = "Credentials for Yandex Cloud S3 (access_key and secret_key)"
-#   type = object({
-#     access_key = string
-#     secret_key = string
-#   })
-#   sensitive = true # Скрывает значения в выводе Terraform
-# }
+# Vault Configuration
+variable "vault_config" {
+  type = object({
+    mount = string
+    name  = string
+    data  = map(string)
+  })
+  default = {
+    mount = "secret"
+    name  = "example"
+    data  = {
+      test = "congrats!"
+    }
+  }
+}
