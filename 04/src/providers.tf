@@ -18,10 +18,10 @@ terraform {
 }
 
 provider "yandex" {
-  token                    = var.token
+  # token                    = var.token
   cloud_id                 = "b1g8ta6qu7na0ir2khnv"
   folder_id                = "b1g8kve3609ag8bp327e"
-  # service_account_key_file = file("~/.authorized_key.json")
+  service_account_key_file = file("~/.authorized_key.json")
   zone                     = "ru-central1-a" #(Optional) 
 }
 
@@ -34,7 +34,7 @@ provider "aws" {
   secret_key                  = "mock_secret_key"
 }
 
-provider "vault" {
-  address = "http://127.0.0.1:8200"
-  token   = "education"
-}
+# provider "vault" {
+#   address = "http://127.0.0.1:8200"
+#   token   = "education"
+# }

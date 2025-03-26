@@ -122,13 +122,22 @@ variable "random_string_config" {
   }
 }
 
-# Vault Configuration
-variable "vault_config" {
-  default = {
-    mount = "secret"
-    name  = "example"
-    data  = {
-      test = "congrats!"
-    }
-  }
-}
+# # Vault Configuration
+# variable "vault_config" {
+#   default = {
+#     mount = "secret"
+#     name  = "example"
+#     data  = {
+#       test = "congrats!"
+#     }
+#   }
+# }
+
+# variable "yc_s3_credentials" {
+#   description = "Credentials for Yandex Cloud S3 (access_key and secret_key)"
+#   type = object({
+#     access_key = string
+#     secret_key = string
+#   })
+#   sensitive = true # Скрывает значения в выводе Terraform
+# }
