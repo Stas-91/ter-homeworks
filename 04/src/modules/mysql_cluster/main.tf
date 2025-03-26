@@ -3,6 +3,7 @@ resource "yandex_mdb_mysql_cluster" "cluster" {
   network_id  = var.network_id
   environment = var.environment
   version     = var.mysql_version
+  security_group_ids = var.security_group_ids
 
   resources {
     resource_preset_id = var.resource_preset_id

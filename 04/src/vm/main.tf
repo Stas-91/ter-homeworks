@@ -44,7 +44,7 @@ data "template_file" "cloudinit" {
 }
 
 module "marketing_vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=f96532a"
   env_name       = "develop"
   network_id     = data.terraform_remote_state.vpc.outputs.vpc_dev_network_id
   subnet_zones   = ["ru-central1-a"]
@@ -64,7 +64,7 @@ module "marketing_vm" {
 }
 
 module "analytics_vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=f96532a"
   env_name       = "stage"
   network_id     = data.terraform_remote_state.vpc.outputs.vpc_dev_network_id
   subnet_zones   = ["ru-central1-a"]

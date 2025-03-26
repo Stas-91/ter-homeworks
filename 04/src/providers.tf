@@ -2,6 +2,7 @@ terraform {
   required_providers {
     yandex = {
       source = "yandex-cloud/yandex"
+      version = ">=0.72.0"
     }
 
     aws = {
@@ -12,6 +13,14 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "> 3.5"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2.2"
+    }
+    vault = {
+      source  = "hashicorp/vault"
+      version = ">= 3.0"
     }
   }
   required_version = "~>1.8.4"
@@ -34,7 +43,3 @@ provider "aws" {
   secret_key                  = "mock_secret_key"
 }
 
-# provider "vault" {
-#   address = "http://127.0.0.1:8200"
-#   token   = "education"
-# }
